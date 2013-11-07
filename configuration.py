@@ -12,9 +12,7 @@ class ConfigMeta(type):
         configDict[name.lower().replace("config", "")] = newClass
         return newClass
         
-class DefaultConfig(object):
-    __metaclass__ = ConfigMeta
-
+class DefaultConfig(object, metaclass=ConfigMeta):
     debug = False
     sql_debug = False
     fb_api_key = '441492242600176'
