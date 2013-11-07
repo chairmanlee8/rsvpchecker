@@ -38,7 +38,7 @@ if __name__ == "__main__":
             main(args.address, args.port)
         elif cmd == "shell":
             import code
-            session = Backend.instance().get_session()
+            #session = Backend.instance().get_session()
             code.interact(local=locals())
         elif cmd == "test":
             import unittest
