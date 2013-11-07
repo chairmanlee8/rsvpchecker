@@ -1,0 +1,98 @@
+!!!
+%html
+	%head
+		%title RSVP Checker
+		%meta(name="viewport" content="width=device-width, initial-scale=1.0")
+
+		%link(href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet")
+		%link(href="/static/css/app.css" rel="stylesheet")
+
+		<!--[if lt IE 9]>
+		%script(src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js")
+		%script(src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js")
+		<![endif]-->
+
+	%body
+		-# Facebook embed
+		:javascript
+			var access_token = null;
+
+			window.fbAsyncInit = function() {
+				FB.init({
+					appId		: '{{ fb_api_key }}',
+					channelUrl	: '//68.68.99.28/channel.html',
+					status		: true,
+					cookie		: true,
+					xfbml		: true
+				});
+
+				FB.getLoginStatus(function (response) {
+					if (response.status === 'connected') {
+						access_token = String(response.authResponse.accessToken);
+						document.getElementById("facebook-warning").style.display = 'none';
+					}
+				});
+			};
+
+			// Load SDK async
+			(function(d) {
+				var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+				if (d.getElementById(id)) {return;}
+				js = d.createElement('script'); js.id = id; js.async = true;
+				js.src = "//connect.facebook.net/en_US/all.js";
+				ref.parentNode.insertBefore(js, ref);
+			}(document));
+
+		.container
+			.jumbotron
+				%h3 RSVP Checker
+				%p Copy and paste a Facebook event link
+				%form.form-inline(role="form")
+					%input.form-control(type="input" placeholder="https://www.facebook.com/events/.../" name="eventLink")
+					%button#process.btn.btn-default
+						%span.actionable
+							Process
+							%span.glyphicon.glyphicon-chevron-right
+						%span.working(style="display: none;")
+							Working...
+					%img.working(src="/static/images/loader128.GIF" style="width: 32px; height: 32px; display: none;")/
+
+			#facebook-warning.alert.alert-warning
+				<b>Warning!</b> You need to login to Facebook and have permissions to access the event for this tool to work. Clicking the <i>Process</i> button will prompt you to login to Facebook.
+
+			#results.panel.panel-default(style="display: none;")
+				.panel-heading Event Results
+				.panel-body
+					%table.table.table-bordered.table-hover
+						%tr
+							%th
+							%th <span class="glyphicon glyphicon-ok-sign"></span> Attending
+							%th <span class="glyphicon glyphicon-question-sign"></span> Maybe
+							%th <span class="glyphicon glyphicon-remove-sign"></span> Declined
+							%th <span class="glyphicon glyphicon-minus-sign"></span> No Response
+						%tr
+							%th <img src="/static/images/icon-guy.png" /> Men
+							%td#male-attending
+							%td#male-maybe
+							%td#male-declined
+							%td#male-noreply
+						%tr
+							%th <img src="/static/images/icon-girl.png" /> Women
+							%td#female-attending
+							%td#female-maybe
+							%td#female-declined
+							%td#female-noreply
+						%tr
+							%th Unknown
+							%td#other-attending
+							%td#other-maybe
+							%td#other-declined
+							%td#other-noreply
+
+			%footer.navbar.navbar-default.navbar-fixed-bottom
+				A <a href="http://www.regularexpressionless.com/">regexpless</a></b> project.
+
+		%script(src="/static/vendor/jquery-2.0.3.min.js")
+		%script(src="/static/vendor/bootstrap/js/bootstrap.min.js")
+		%script(src="/static/js/app.js")
+		%script(src="/static/js/index.js")
