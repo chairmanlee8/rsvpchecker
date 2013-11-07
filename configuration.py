@@ -75,7 +75,7 @@ class ProductionConfig(DefaultConfig):
     debug = True
     fb_api_key = '548946371797639'
     fb_secret = '8e319411ef77ac03608af70c58a0dc27'
-    sqlURI = 'mysql://studycloud:pass@127.0.0.1:3306/studycloud?charset=utf8'
+    sqlURI = 'sqlite:///:memory:'
     site_url = 'www.mystudycloud.com'
     bypass_haml_sass = True
 
