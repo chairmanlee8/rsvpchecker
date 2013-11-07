@@ -50,32 +50,40 @@ RSVP.loadEvent = function(eventId, access_token, outData)
 // Takes an array of users ({"id"} minimum) and loads their gender.
 RSVP.loadUserGender = function(data, access_token)
 {
-    var batchJSON = [],
-        dfd = $.Deferred();
-
-    // FB Batch Request builder
-    for(var i in data) {
-        batchJSON.push({
-            "method": "GET",
-            "relative_url": data[i]["id"] + "?fields=gender"
-        });
-    }
-
-    $.post("https://graph.facebook.com/", {"access_token": access_token, "batch": JSON.stringify(batchJSON)}, function (rdata) 
+    var _load = function(lo, hi)
     {
-        // Process response
-        for(var i in data) {
-            // Should be same indices in batchJSON as data
-            if(rdata[i] && rdata[i].code == "200") {
-                var obj = JSON.parse(rdata[i].body);
-                data[i]["gender"] = obj["gender"];
-            }
+        var batchJSON = [];
+
+        for(var i = lo; i < hi; i++) {
+            batchJSON.push({
+                "method": "GET",
+                "relative_url": data[i]["id"] + "?fields=gender"
+            });
         }
 
-        dfd.resolve();
-    }, "json");
+        return $.post("https://graph.facebook.com/", {"access_token": access_token, "batch": JSON.stringify(batchJSON)}, 
+            function (rdata) 
+            {
+                // Process response
+                for(var j in rdata) {
+                    // Should be same indices in batchJSON as data
+                    if(rdata[j] && rdata[j].code == "200") {
+                        var obj = JSON.parse(rdata[j].body);
+                        data[Number(lo)+Number(j)]["gender"] = obj["gender"];
+                    }
+                }
+            }, 
+        "json");
+    }
+    
+    var dfds = [];
 
-    return dfd.promise();
+    for(var i = 0; i < data.length; i += 50) 
+    {
+        dfds.push(_load(i, Math.min(i+50, data.length)));
+    }
+
+    return $.when.apply($, dfds);
 }
 
 // Report function
