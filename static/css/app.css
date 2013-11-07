@@ -412,6 +412,11 @@ body {
 }
 
 /* line 5, ../../src/sass/main.sass */
+.container {
+  max-width: 960px !important;
+}
+
+/* line 8, ../../src/sass/main.sass */
 footer {
   text-align: center;
   line-height: 46px;
