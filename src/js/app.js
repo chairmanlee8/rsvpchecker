@@ -47,8 +47,8 @@ RSVP.loadEvent = function(eventId, access_token, outData)
                   _load(baseUri + "declined", baseTail, outData["declined"], dDec));
 }
 
-// Takes an array of users ({"id"} minimum) and loads their gender.
-RSVP.loadUserGender = function(data, access_token)
+// Takes an array of users ({"id"} minimum) and loads the fields requested.
+RSVP.loadUserFields = function(data, access_token, fields)
 {
     var _load = function(lo, hi)
     {
@@ -57,7 +57,7 @@ RSVP.loadUserGender = function(data, access_token)
         for(var i = lo; i < hi; i++) {
             batchJSON.push({
                 "method": "GET",
-                "relative_url": data[i]["id"] + "?fields=gender"
+                "relative_url": data[i]["id"] + "?fields=" + fields.join()
             });
         }
 
@@ -69,7 +69,11 @@ RSVP.loadUserGender = function(data, access_token)
                     // Should be same indices in batchJSON as data
                     if(rdata[j] && rdata[j].code == "200") {
                         var obj = JSON.parse(rdata[j].body);
-                        data[Number(lo)+Number(j)]["gender"] = obj["gender"];
+                        var tobj = data[Number(lo)+Number(j)];
+
+                        for(var f in fields) {
+                            tobj[fields[f]] = obj[fields[f]];
+                        }
                     }
                 }
             }, 
