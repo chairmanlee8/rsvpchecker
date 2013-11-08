@@ -15,6 +15,7 @@ class ConfigMeta(type):
 class DefaultConfig(object, metaclass=ConfigMeta):
     debug = False
     sql_debug = False
+    google_analytics = False
     fb_api_key = '441492242600176'
     fb_secret = '6be3b0edc846c26c121ab112f3236c50'
     cookie_secret = 'nM0NVc7gCITOiP+ueLNTE+fl/CwiR5JCBZzve9ChSe0='
@@ -71,6 +72,7 @@ class AndrewConfig(DefaultConfig):
 class ProductionConfig(DefaultConfig):
     """ Production configuration that runs on the production server """
     debug = True
+    google_analytics = True
     fb_api_key = '548946371797639'
     fb_secret = '8e319411ef77ac03608af70c58a0dc27'
     sqlURI = 'sqlite:///:memory:'

@@ -17,5 +17,5 @@ from views.base import BaseHandler, admin_only
 
 class ViewIndexHandler(BaseHandler):
     def get(self):
-        self.render("index.html", fb_api_key=currentConfig.fb_api_key)
+        self.render("index.html", fb_api_key=currentConfig.fb_api_key, google_analytics=currentConfig.google_analytics)
 
